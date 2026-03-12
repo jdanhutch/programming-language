@@ -1,0 +1,47 @@
+procedure entry
+    push 'Somewhat boring product'
+    push 2.5
+
+    push 'Product 2'
+    push 15
+
+    push 'Product 3'
+    push 0.5
+
+    push 'Boring product'
+    push 0.5
+
+    push 'Exciting product'
+    push 4.99
+
+    loop filter_by_interest
+    loop filter_by_affordable
+    loop map_to_report
+    loop print
+
+procedure filter_by_interest
+    string product
+    number price
+
+    branch on product
+        <> /boring/i
+            push product
+            push price
+    end
+
+procedure filter_by_affordable
+    string product
+    number price
+
+    branch on price
+        < 5
+            push product
+            push price
+    end
+
+procedure map_to_report
+    string product
+    number price
+
+    push 'Product: 'product'\n'
+        'Price: 'price'\n'

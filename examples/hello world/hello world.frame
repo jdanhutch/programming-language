@@ -1,0 +1,3 @@
+procedure entry
+    push 'Hello, world!'
+    call print
