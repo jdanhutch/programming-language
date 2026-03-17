@@ -1,47 +1,80 @@
 procedure entry
-    push 'Somewhat boring product'
-    push 2.5
+    'Somewhat boring product'
+    2.5
 
-    push 'Product 2'
-    push 15
+    'Product 2'
+    15
 
-    push 'Product 3'
-    push 0.5
+    'Product 3'
+    0.5
 
-    push 'Boring product'
-    push 0.5
+    'Boring product'
+    0.5
 
-    push 'Exciting product'
-    push 4.99
+    'Exciting product'
+    4.99
 
-    loop filter_by_interest
-    loop filter_by_affordable
-    loop map_to_report
-    loop print
+    filter to_interesting_product
+    filter to_affordable_product
 
-procedure filter_by_interest
+    (
+        'RECEIPT\n'
+        '--\n
+    )
+    accumulate to_products_receipt
+    squash print
+
+    0
+    reduce to_total_cost
+
+    keep to_full_receipt
+    squash print
+
+procedure to_interesting_product
     string product
     number price
 
-    branch on product
+    branch product
         <> /boring/i
-            push product
-            push price
+            product
+            price
     end
 
-procedure filter_by_affordable
+procedure to_affordable_product
     string product
     number price
 
-    branch on price
+    branch price
         < 5
-            push product
-            push price
+            product
+            price
     end
 
-procedure map_to_report
+procedure to_product_receipt
     string product
     number price
 
-    push 'Product: 'product'\n'
-        'Price: 'price'\n'
+procedure to_products_receipt
+    string total_receipt
+    string product
+    number price
+
+    (
+        total_receipt
+        'Product: ' product '\n'
+        'Price: ' price '\n'
+        '--\n'
+    )
+
+procedure to_total_cost
+    number total
+    string product
+    number price
+
+    total + price
+
+procedure to_full_receipt
+    string product_receipt
+    number total_cost
+
+    push (product_receipt 'Total: ' total_cost)

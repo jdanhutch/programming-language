@@ -93,7 +93,7 @@ Some, but not all, commands execute procedures by iterating over the context. Th
 
 #### accumulate
 
-`accumulate` is an iterative command. Iteration begins at the value immediately after the caller's parameters until the accumulator is reached. The accumulator is the last value in the context and the first parameter in the callee. The accumulator and all of the values in each iteration are kept in the context. The callee must only push one value of the same type as the accumulator, regardless of any branching in the callee, which is stored in the accumulator. Each iteration uses as many values as required by the callee's parameters minus the accumulator.
+`accumulate` is an iterative command. Iteration begins at the value immediately after the caller's parameters until the accumulators are reached. The accumulators are the last values in the context and the first parameters in the callee. The accumulators and all of the values in each iteration are kept in the context. The callee's push signature governs the quantity and types of the accumulators. The callee cannot have an empty push signature. All accumulators must be pushed by the caller. The values pushed by the callee are stored in the accumulators, in order. Each iteration uses as many values as required by the callee's parameters minus the accumulators.
 
     procedure entry
         [The context is empty]
@@ -117,16 +117,28 @@ Some, but not all, commands execute procedures by iterating over the context. Th
         250
         [Context: 'Animals: ' 'Cat' 150 'Dog' 250]
 
+        ''
         0
         [Context: 'Animals: ' 'Cat' 150 'Dog' 250 0]
 
-        accumulate total_cost [Begins iteration after 'Animals: '.]
-        [Context: 'Animals: ' 'Cat' 150 'Dog' 250 400]
+        accumulate to_totals [Begins iteration after 'Animals: '.]
+        [Context: 'Animals: ' 'Cat' 150 'Dog' 250 'Cat Dog' 400]
 
-    procedure total_cost
+    procedure to_totals
+        [Accumulators]
+        string animals
         number sum
+
+        [Iteration values]
         string animal
         number cost
+
+        branch animals
+            = ''
+                (animal)
+            else
+                (animals ', ' animal)
+        end
 
         sum + cost
 
@@ -336,7 +348,7 @@ Some, but not all, commands execute procedures by iterating over the context. Th
 
 #### reduce
 
-`reduce` is an iterative command. Iteration begins at the value immediately after the caller's parameters until the accumulator is reached. The accumulator is the last value in the context and the first parameter in the callee. All of the values in each iteration are removed from the context, and the accumulator is kept in the context. The callee must only push one value of the same type as the accumulator, regardless of any branching in the callee, which is stored in the accumulator. Each iteration uses as many values as required by the callee's parameters minus the accumulator.
+`reduce` is an iterative command. Iteration begins at the value immediately after the caller's parameters until the accumulators are reached. The accumulators are the last values in the context and the first parameters in the callee. All of the values in each iteration are removed from the context, and the accumulators are kept in the context. The callee's push signature governs the quantity and types of the accumulators. The callee cannot have an empty push signature. All accumulators must be pushed by the caller. The values pushed by the callee are stored in the accumulators, in order. Each iteration uses as many values as required by the callee's parameters minus the accumulators.
 
     procedure entry
         [The context is empty]
@@ -360,16 +372,28 @@ Some, but not all, commands execute procedures by iterating over the context. Th
         250
         [Context: 'Animals: ' 'Cat' 150 'Dog' 250]
 
+        ''
         0
         [Context: 'Animals: ' 'Cat' 150 'Dog' 250 0]
 
-        reduce total_cost [Begins iteration after 'Animals: '.]
-        [Context: 'Animals: ' 400]
+        reduce to_totals [Begins iteration after 'Animals: '.]
+        [Context: 'Animals: ' 'Cat Dog' 400]
 
-    procedure total_cost
+    procedure to_totals
+        [Accumulators]
+        string animals
         number sum
+
+        [Iteration values]
         string animal
         number cost
+
+        branch animals
+            = ''
+                (animal)
+            else
+                (animals ', ' animal)
+        end
 
         sum + cost
 
